@@ -7,20 +7,56 @@ df4=as.data.frame(t(data.table::fread("second_magic4.csv",header=T)))[-1,]
 df5=as.data.frame(t(data.table::fread("second_magic5.csv",header=T)))[-1,]
 df6=as.data.frame(t(data.table::fread("second_magic6.csv",header=T)))[-1,]
 
+
+#比较T6
 y0=cbind(df2,df4,df5)
 y=cbind(y0,df6)
-dim(y0)
-dim(y)
-y0[1:5,1:5]
+group_list = c(rep("other",dim(y0)[2]), rep("Regulator",dim(df6)[2]))#对应sample的分组列表
+
+
+
+#比较T2
+y0=cbind(df5,df6,df4)
+y=cbind(y0,df2)
+group_list = c(rep("other",dim(y0)[2]), rep("Helper",dim(df2)[2]))#对应sample的分组列表
+
+
+
+#比较T5
+y0=cbind(df2,df3,df6)
+y=cbind(y0,df5)
+group_list = c(rep("other",dim(y0)[2]), rep("Naive",dim(df5)[2]))#对应sample的分组列表
+
+
+
+
+#比较T4
+y0=cbind(df2,df4,df5)
+y=cbind(y0,df6)
+group_list = c(rep("other",dim(y0)[2]), rep("Regulator",dim(df4)[2]))#对应sample的分组列表
+
+
+
+#比较T3
+y0=cbind(df4,df5,df2)
+y=cbind(y0,df3)
+group_list = c(rep("other",dim(y0)[2]), rep("Regulator",dim(df3)[2]))#对应sample的分组列表
+
+
+
+
+
+#比较T0和T1
+y0=df0
+y=df1
+group_list = c(rep("other",dim(y0)[2]), rep("Regulator",dim(df1)[2]))#对应sample的分组列表
+
+
+
+
 
 library(limma)
-
-# 2.构建实验设计矩阵
-
-group_list = c(rep("other",dim(y0)[2]), rep("Regulator",9411))#对应sample的分组列表
-
-# 这里根据实际的情况设置（表型）分组，对应表达矩阵的列：样本
-
+# 1.构建实验设计矩阵
 design <- model.matrix(~0+factor(group_list))
 
 design
@@ -72,3 +108,8 @@ dif <- tempOutput[tempOutput[, "P.Value"]<0.01,]
 # 显示一部分报告结果
 
 head(dif)
+
+
+
+
+write.csv(dif,"T6_DiffAnalysis.csv") 
